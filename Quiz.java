@@ -1,45 +1,42 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 import java.util.*;
 
 
-public class Quiz {
+public class Quiz extends JFrame{
+    JButton buttonA= new JButton("A");
+    JButton buttonB = new JButton("B");
+    JButton buttonC = new JButton("C");
+    JButton buttonD = new JButton("D");
 
-    static String[] questions = {"Which animal was Tom?", "Which animal was Mickey?",
+    JTextArea textArea = new JTextArea();
+
+
+    JLabel label = new JLabel("Quiestion - ");
+
+    String[] questions = {"Which animal was Tom?", "Which animal was Mickey?",
             "Which animal was Winnie?", "Which animal was Pororo?"};
-    static String[] answers = {"Cat", "Mouse", "Bear", "Penguin"};
+    String[] answers = {"Cat", "Mouse", "Bear", "Penguin"};
 
-    static String getAnswer(String que_) {
-        for (int i = 0; i < questions.length; i++){
-            if (questions[i].equals(que_)) {
-                return answers[i];
-            }
-            else {
-                return "";
-            }
-        }
-        return "";
-    }
+    String[] optAnsw = {"Cat", "Mouse" , "Bear", "Penguin"};
 
-    public static void main(String[] args) {
+    int cnt = 0, allCnt = questions.length;
+    int cntAnswers = 0;
 
-        String[] optAnsw = {"Cat", "Mouse" , "Bear", "Penguin"};
+    Quiz(String frameName){
+        super(frameName);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 400);
 
-
-        JFrame frame = new JFrame("quiz");
-        JPanel panel = new JPanel(new GridBagLayout());
-        JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
-        JButton buttonA = new JButton("A");
-        JButton buttonB = new JButton("B");
-        JButton buttonC = new JButton("C");
-        JButton buttonD = new JButton("D");
-        JLabel label = new JLabel("Quiestion - ");
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        JPanel panel = new JPanel(new GridBagLayout());
+
+
         panel.setBorder(new EmptyBorder(new Insets(10, 10, 10, 10)));
         panel.setSize(400, 400);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -80,30 +77,119 @@ public class Quiz {
         gbc.gridy = 3;
         panel.add(buttonD, gbc);
 
-        frame.add(panel);
+        this.add(panel);
+    }
+
+    String getAnswer(String que_) {
+        for (int i = 0; i < questions.length; i++){
+            if (questions[i].equals(que_)) {
+                return answers[i];
+            }
+        }
+        return "";
+    }
+
+    void nextQuestion(){
+
+        if (cnt >= allCnt) {
+            JOptionPane.showMessageDialog(null, "Correct answers - " + cntAnswers
+            + " of " + allCnt);
+
+            restartGame();
+            wannaPlay();
 
 
-        int playQuestion = JOptionPane.showConfirmDialog(null, "Do you want to play?", "Quiz game",
-                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (playQuestion == JOptionPane.YES_NO_OPTION) {
-            frame.setVisible(true);
-            int cnt = 0, allCnt = questions.length;
-
-            label.setText("Question - " + questions[cnt] + " of " + allCnt);
+        }
+        else {
+            label.setText("Question - " + (cnt + 1) + " of " + allCnt);
             Collections.shuffle(Arrays.asList(optAnsw));
 
             textArea.setText(questions[cnt]);
+
             buttonA.setText(optAnsw[0]);
             buttonB.setText(optAnsw[1]);
             buttonC.setText(optAnsw[2]);
             buttonD.setText(optAnsw[3]);
+            cnt++;
+        }
+    }
 
+    void restartGame(){
+        cnt =0;
+        cntAnswers = 0;
+
+    }
+
+    void wannaPlay(){
+        int playQuestion = JOptionPane.showConfirmDialog(null, "Do you want to play?", "Quiz game",
+                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+
+        if (playQuestion == JOptionPane.YES_NO_OPTION) {
+            this.setVisible(true);
+            this.nextQuestion();
 
         }
         else {
             System.exit(0);
         }
+    }
+
+    public static void main(String[] args) {
+
+
+
+
+        Quiz frame = new Quiz("quiz");
+
+
+        frame.wannaPlay();
+
+
+        frame.buttonA.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (frame.buttonA.getText().equals(frame.getAnswer(frame.textArea.getText()))) {
+                    frame.cntAnswers++;
+                }
+
+                frame.nextQuestion();
+            }
+        });
+
+        frame.buttonB.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (frame.buttonB.getText().equals(frame.getAnswer(frame.textArea.getText()))) {
+                    frame.cntAnswers++;
+
+                }
+                frame.nextQuestion();
+            }
+        });
+
+        frame.buttonC.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (frame.buttonC.getText().equals(frame.getAnswer(frame.textArea.getText()))) {
+                    frame.cntAnswers++;
+
+                }
+                frame.nextQuestion();
+            }
+        });
+
+        frame.buttonD.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (frame.buttonD.getText().equals(frame.getAnswer(frame.textArea.getText()))) {
+                    frame.cntAnswers++;
+
+                }
+                frame.nextQuestion();
+            }
+        });
 
     }
 
